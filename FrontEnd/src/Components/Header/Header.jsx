@@ -18,6 +18,7 @@ const Header = () => {
   const handleRegister = () => {
     navigate("/register");
   };
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary bg-light">
       <Container>
