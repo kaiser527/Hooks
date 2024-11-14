@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
-import { getQuizByUser } from "../../services/apiServices";
+import { useEffect } from "react";
 import "./ListQuiz.scss";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllQuizByUser } from "../../redux/action/quizAction";
 
 const ListQuiz = (props) => {
-  const [arrQuiz, setArrQuiz] = useState([]);
+  const arrQuiz = useSelector((state) => state.quiz.quizData.arrQuiz);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getQuizData();
+    dispatch(fetchAllQuizByUser());
   }, []);
 
-  const getQuizData = async () => {
-    const res = await getQuizByUser();
-    if (res && res.EC === 0) {
-      setArrQuiz(res.DT);
-      console.log(res);
-    }
-  };
   return (
     <div className="list-quiz-container container">
       {arrQuiz &&
@@ -35,7 +33,15 @@ const ListQuiz = (props) => {
               <div className="card-body">
                 <h5 className="card-title">Quiz {index + 1}</h5>
                 <p className="card-text">{quiz.description}</p>
-                <button href="#" className="btn btn-primary">
+                <button
+                  className="btn btn-primary"
+                  onClick={
+                    () =>
+                      navigate(`/quiz/${quiz.id}`, {
+                        state: { quizTitle: quiz.description },
+                      }) //truyen data truoc khi den trang dich
+                  }
+                >
                   Start Now
                 </button>
               </div>

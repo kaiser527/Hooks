@@ -10,7 +10,6 @@ const ModalDeleteUser = (props) => {
     show,
     setShow,
     dataDelete,
-    fetchListUsers,
     fetchListUsersWithPaginate,
     setCurrentPage,
   } = props;

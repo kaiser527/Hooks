@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import ModalCreateUSer from "./ModalCreateUser";
 import "./ManageUser.scss";
 import { FcPlus } from "react-icons/fc";
-import TableUser from "./TableUser";
-import { getAllUser, getUserWithPaginate } from "../../../services/apiServices";
+import { getUserWithPaginate } from "../../../services/apiServices";
 import ModalUpdateUser from "./ModalUpdateUser";
 import ModalViewUser from "./ModalViewUser";
 import ModalDeleteUser from "./ModalDeleteUser";
 import TableUserPaginate from "./TableUserPaginate";
 
 const ManageUser = (props) => {
-  const LIMIR_USER = 6;
+  const LIMIR_USER = 10;
   const [showModalCreateUser, setShowModalCreateUser] = useState(false);
   const [listUsers, setListUsers] = useState([]);
   const [showModaUpdateUser, setShowModaUpdateUser] = useState(false);
@@ -23,16 +22,8 @@ const ManageUser = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    //fetchListUsers();
     fetchListUsersWithPaginate(currentPage);
   }, []);
-
-  const fetchListUsers = async () => {
-    const res = await getAllUser();
-    if (res.EC === 0) {
-      setListUsers(res.DT);
-    }
-  };
 
   const fetchListUsersWithPaginate = async (page) => {
     const res = await getUserWithPaginate(page, LIMIR_USER);
@@ -71,12 +62,6 @@ const ManageUser = (props) => {
           </button>
         </div>
         <div className="table-users-container">
-          {/* <TableUser
-            listUsers={listUsers}
-            handleClickBtnUpdate={handleClickBtnUpdate}
-            handleClickBtnView={handleClickBtnView}
-            handleClickBtnDelete={handleClickBtnDelete}
-          /> */}
           <TableUserPaginate
             listUsers={listUsers}
             handleClickBtnUpdate={handleClickBtnUpdate}
@@ -91,7 +76,6 @@ const ManageUser = (props) => {
         <ModalCreateUSer
           show={showModalCreateUser}
           setShow={setShowModalCreateUser}
-          fetchListUsers={fetchListUsers}
           fetchListUsersWithPaginate={fetchListUsersWithPaginate}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
@@ -101,7 +85,6 @@ const ManageUser = (props) => {
           setShow={setShowModaUpdateUser}
           dataUpdate={dataUpdate}
           setDataUpdate={setDataUpdate}
-          fetchListUsers={fetchListUsers}
           fetchListUsersWithPaginate={fetchListUsersWithPaginate}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
@@ -117,7 +100,6 @@ const ManageUser = (props) => {
           dataDelete={dataDelete}
           setDataDelete={setDataDelete}
           setShow={setShowModalDeleteUser}
-          fetchListUsers={fetchListUsers}
           fetchListUsersWithPaginate={fetchListUsersWithPaginate}
           setCurrentPage={setCurrentPage}
         />

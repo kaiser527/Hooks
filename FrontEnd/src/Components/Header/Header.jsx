@@ -25,6 +25,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     const data = await postLogout(account.email, account.refresh_token);
+    console.log(data);
     if (data && data.EC === 0) {
       dispatch(doLogout(data));
       toast.success(data.EM);

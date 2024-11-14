@@ -1,0 +1,98 @@
+Redux
+1. Khai bao dispatch + actions => react component
+2. Khai bao Reducer + logic => reducer
+3. Su dung state cua Redux
+
+useSelector() = mapStateToProps
+useDispatch() = mapDispatchToProps
+
+dispatch: giup react va redux co the "giao tiep" duoc voi nhau vd: dispatch(action(state))
+action: carry nhung thong tin tu react nem vao redux va cho thang reducer biet no phai xu ly nhung logic gi
+
+Customize data
+
+List of questions
+
+DT: Array(9)
+0:{id:..., description:..., image:..., answers:{...}}
+1:{id:..., description:..., image:..., answers:{...}}
+...
+8:{id:..., description:..., image:..., answers:{...}}
+
+inner Array[0]
+0:
+    answers:
+        description:...
+        id:...
+    description:
+    id:...
+    image:...
+
+Expected data 
+Array(3)
+0:{questionId:..., answers: Array(3), questionDescription:...}
+1:{questionId:..., answers: Array(3), questionDescription:...}
+2:{questionId:..., answers: Array(3), questionDescription:...}
+
+inner Array(3)[0]
+0:
+    answers: Array(3) 
+        0:{id:..., description:...,}
+        1:{id:..., description:...,}
+        2:{id:..., description:...,}
+    image:...
+    questionDescription:...
+    questionId:...
+
+Idea: group by questions id, each id has one array object answers
+
+-> use lodash groupBy
+
+Example:
+
+var data = [{
+  "name": "jim",
+  "color": "blue",
+  "age": "22"
+}, {
+  "name": "Sam",
+  "color": "blue",
+  "age": "33"
+}, {
+  "name": "eddie",
+  "color": "green",
+  "age": "77"
+}];
+
+console.log(
+  _.chain(data)
+    .groupBy("color")
+    .map((value, key) => ({ color: key, users: value }))
+    .value()
+);
+
+Solve: 
+    const fetchQuestions = async () => {
+        const res = await getQuestionById(quizId)
+        const raw = res.DT
+        const data = _.chain(raw)
+                        .groupBy("id)
+                        `key` is group's name, `value` is the array of objects
+                        .map((value, key) => {
+                            let answers = []
+                            //solution for answers null: push DT.answers into our answers with forEach or map
+                            let questionDescription, image = null
+                            value.forEach((item, index) => {
+                                if(index === 0){
+                                    questionDescription = item.description
+                                    image = item.image
+                                }
+                                answers.push(item.answers)
+                            })
+                            return {quizId: key, answers}
+                        }) 
+                        .value()
+                        >>>Check data each step console.log(data)
+    }
+    
+

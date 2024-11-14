@@ -12,7 +12,6 @@ const ModalUpdateUser = (props) => {
     setShow,
     dataUpdate,
     setDataUpdate,
-    fetchListUsers,
     fetchListUsersWithPaginate,
     setCurrentPage,
     currentPage,
@@ -63,7 +62,7 @@ const ModalUpdateUser = (props) => {
       );
   };
 
-  const handleSubmitCreateUser = async () => {
+  const handleSubmitEditUser = async () => {
     // const data = {
     //   email: email,
     //   password: password,
@@ -83,7 +82,6 @@ const ModalUpdateUser = (props) => {
     if (data && data.EC === 0) {
       toast.success(data.EM);
       handleClose();
-      //await fetchListUsers();
       setCurrentPage(currentPage);
       await fetchListUsersWithPaginate(currentPage);
     }
@@ -170,7 +168,7 @@ const ModalUpdateUser = (props) => {
           <Button variant="secondary" onClick={() => setShow(!show)}>
             Close
           </Button>
-          <Button variant="primary" onClick={() => handleSubmitCreateUser()}>
+          <Button variant="primary" onClick={() => handleSubmitEditUser()}>
             Save
           </Button>
         </Modal.Footer>

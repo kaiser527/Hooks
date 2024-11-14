@@ -10,6 +10,14 @@ import Register from "./Components/Auth/Register";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import ListQuiz from "./Components/User/ListQuiz";
+import DetailQuiz from "./Components/User/DetailQuiz";
+import ManageQuiz from "./Components/Admin/Content/Quiz/ManageQuiz";
+
+const NotFound = () => {
+  return (
+    <div className="container mt-4 alert alert-danger">404.Not found route</div>
+  );
+};
 
 const Layout = (props) => {
   return (
@@ -19,12 +27,16 @@ const Layout = (props) => {
           <Route index element={<HomePage />} />
           <Route path="/users" element={<ListQuiz />} />
         </Route>
+        <Route path="/quiz/:id" element={<DetailQuiz />} />
+        {/*:id khai bao them tham so tren duong link url voi kieu gia tri la 1 key trong 1 object*/}
         <Route path="/admins" element={<Admin />}>
           <Route index element={<DashBoard />} />
+          <Route path="manage-quizzes" element={<ManageQuiz />} />
           <Route path="manage-users" element={<ManageUser />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <ToastContainer

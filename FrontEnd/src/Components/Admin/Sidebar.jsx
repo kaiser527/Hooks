@@ -13,10 +13,13 @@ import sidebarBg from "../../assets/bg2.jpg";
 import { DiReact } from "react-icons/di";
 import { MdDashboard } from "react-icons/md";
 import "./SideBar.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SideBar = (props) => {
   const { image, collapsed, toggled, handleToggleSidebar } = props;
+
+  const navigate = useNavigate();
+
   return (
     <>
       <ProSidebar
@@ -39,8 +42,10 @@ const SideBar = (props) => {
               whiteSpace: "nowrap",
             }}
           >
-            <DiReact size={"3em"} color={"00bfff"} />
-            <span>Admin Sidebar</span>
+            <div style={{ cursor: "pointer" }}>
+              <DiReact size={"3em"} color={"00bfff"} />
+              <span onClick={() => navigate("/")}>Admin Sidebar</span>
+            </div>
           </div>
         </SidebarHeader>
 
@@ -53,10 +58,12 @@ const SideBar = (props) => {
           <Menu iconShape="circle">
             <SubMenu icon={<FaGem />} title="Features">
               <MenuItem>
-                <Link to="/admins/manage-users">Quản lý Users</Link>
+                <Link to="/admins/manage-users">Manage Users</Link>
               </MenuItem>
-              <MenuItem> Quản lý Bài Quiz</MenuItem>
-              <MenuItem> Quản lý Câu Hỏi</MenuItem>
+              <MenuItem>
+                <Link to="/admins/manage-quizzes">Manage Quizzes</Link>
+              </MenuItem>
+              <MenuItem>Manage Questions</MenuItem>
             </SubMenu>
           </Menu>
         </SidebarContent>

@@ -40,7 +40,7 @@ const TableUserPaginate = (props) => {
                   <td>{item.username}</td>
                   <td>{item.email}</td>
                   <td>{item.role}</td>
-                  <td>
+                  <td style={{ display: "flex" }}>
                     <button
                       className="btn btn-secondary"
                       onClick={() => handleClickBtnView(item)}

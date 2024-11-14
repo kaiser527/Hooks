@@ -6,14 +6,7 @@ import { toast } from "react-toastify";
 import { postCreateNewUser } from "../../../services/apiServices";
 
 const ModalCreateUSer = (props) => {
-  const {
-    show,
-    setShow,
-    fetchListUsersWithPaginate,
-    fetchListUsers,
-    setCurrentPage,
-    currentPage,
-  } = props;
+  const { show, setShow, fetchListUsersWithPaginate, setCurrentPage } = props;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +71,6 @@ const ModalCreateUSer = (props) => {
     if (data && data.EC === 0) {
       toast.success(data.EM);
       handleClose();
-      //await fetchListUsers();
       setCurrentPage(1);
       await fetchListUsersWithPaginate(1);
     }
@@ -145,7 +137,6 @@ const ModalCreateUSer = (props) => {
               </label>
               <input
                 type="file"
-                id="labelUpload"
                 hidden
                 onChange={(event) => handleUploadImage(event)}
               />
