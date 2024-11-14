@@ -8,12 +8,6 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { updateQuizForAdmin } from "../../../../redux/action/quizAction";
 
-const options = [
-  { value: "EASY", label: "EASY" },
-  { value: "MEDIUM", label: "MEDIUM" },
-  { value: "HARD", label: "HARD" },
-];
-
 const ModalUpdateQuiz = (props) => {
   const { show, setShow, quizUpdate } = props;
 
@@ -43,14 +37,25 @@ const ModalUpdateQuiz = (props) => {
     }
   };
 
+  const handleClose = () => {
+    setShow(false);
+    setName("");
+    setDescription("");
+    setType("");
+    setImage("");
+    setPreviewImage("");
+    setDataUpdate({});
+  };
+
   const handleSubmitUpdateQuiz = () => {
     if (!name || !description || !type) {
       toast.error("Name/Description/Type is required");
       return;
     } else {
       dispatch(
-        updateQuizForAdmin(quizUpdate.id, description, name, type?.value, image)
+        updateQuizForAdmin(quizUpdate.id, description, name, type, image)
       );
+      handleClose();
     }
     setShow(false);
   };
@@ -87,13 +92,17 @@ const ModalUpdateQuiz = (props) => {
                 onChange={(event) => setDescription(event.target.value)}
               />
             </div>
-            <div className="my-3">
-              <Select
-                options={options}
-                placeholder={"Quiz type..."}
-                defaultValue={type}
-                onChange={setType}
-              />
+            <div className="col-md-12">
+              <label className="form-label">Difficulty</label>
+              <select
+                className="form-select"
+                value={type}
+                onChange={(event) => setType(event.target.value)}
+              >
+                <option value="EASY">EASY</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="HARD">HARD</option>
+              </select>
             </div>
             <div className="col-md-12">
               <label className="form-label label-upload" htmlFor="labelUpload">
