@@ -2,7 +2,6 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FcPlus } from "react-icons/fc";
 import { useEffect, useState } from "react";
-import Select from "react-select";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";

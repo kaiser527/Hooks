@@ -2,9 +2,7 @@ import { useState } from "react";
 
 const AddTodo = (props) => {
   const [Title, setTitle] = useState("");
-  const handleOnChange = (event) => {
-    setTitle(event.target.value);
-  };
+
   const handleOnAdd = (event) => {
     console.log(Title);
     event.preventDefault(event);
@@ -20,7 +18,7 @@ const AddTodo = (props) => {
         <input
           type="text"
           value={Title}
-          onChange={(event) => handleOnChange(event)}
+          onChange={(event) => setTitle(event.target.value)}
         />
         <button
           type="button"
