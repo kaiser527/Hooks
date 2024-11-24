@@ -11,6 +11,7 @@ const TableQuiz = () => {
   const [quizUpdate, setQuizUpdate] = useState({});
 
   const listQuiz = useSelector((state) => state.quiz.quizData.listQuiz);
+  const isSuccess = useSelector((state) => state.quiz.isSuccessAdminFetch);
 
   const dispatch = useDispatch();
 
@@ -30,55 +31,63 @@ const TableQuiz = () => {
 
   return (
     <>
-      <div>List Quizzes:</div>
-      <table className="table table-bordered table-striped table-hover mt-3">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Type</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listQuiz &&
-            listQuiz.map((quiz, index) => {
-              return (
-                <tr key={`table-quiz-${index}`}>
-                  <td>{quiz.id}</td>
-                  <td>{quiz.name}</td>
-                  <td>{quiz.description}</td>
-                  <td>{quiz.difficulty}</td>
-                  <td style={{ display: "flex", gap: "15px" }}>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleClickBtnDelete(quiz)}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      className="btn btn-warning"
-                      onClick={() => handleClickBtnUpdate(quiz)}
-                    >
-                      Update
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
-      <ModelDeleteQuiz
-        show={showModalDeleteQuiz}
-        setShow={setShowModalDeleteQuiz}
-        quizDelete={quizDelete}
-      />
-      <ModalUpdateQuiz
-        show={showModalUpdateQuiz}
-        setShow={setShowModalUpdateQuiz}
-        quizUpdate={quizUpdate}
-      />
+      {isSuccess ? (
+        <>
+          <div>List Quizzes:</div>
+          <table className="table table-bordered table-striped table-hover mt-3">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Type</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listQuiz &&
+                listQuiz.map((quiz, index) => {
+                  return (
+                    <tr key={`table-quiz-${index}`}>
+                      <td>{quiz.id}</td>
+                      <td>{quiz.name}</td>
+                      <td>{quiz.description}</td>
+                      <td>{quiz.difficulty}</td>
+                      <td style={{ display: "flex", gap: "15px" }}>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleClickBtnDelete(quiz)}
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => handleClickBtnUpdate(quiz)}
+                        >
+                          Update
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+          <ModelDeleteQuiz
+            show={showModalDeleteQuiz}
+            setShow={setShowModalDeleteQuiz}
+            quizDelete={quizDelete}
+          />
+          <ModalUpdateQuiz
+            show={showModalUpdateQuiz}
+            setShow={setShowModalUpdateQuiz}
+            quizUpdate={quizUpdate}
+          />
+        </>
+      ) : (
+        <div>
+          <p>Something is wrong with fetchAllQuizForAdmin!</p>
+        </div>
+      )}
     </>
   );
 };

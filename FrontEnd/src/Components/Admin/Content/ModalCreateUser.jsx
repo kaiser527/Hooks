@@ -138,6 +138,7 @@ const ModalCreateUSer = (props) => {
               <input
                 type="file"
                 hidden
+                id="labelUpload"
                 onChange={(event) => handleUploadImage(event)}
               />
             </div>

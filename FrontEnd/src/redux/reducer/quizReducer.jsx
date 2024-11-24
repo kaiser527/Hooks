@@ -11,6 +11,11 @@ const INITIAL_STATE = {
     arrQuiz: [],
     listQuiz: [],
   },
+  isSuccessAdminFetch: false,
+  isSuccessUserFetch: false,
+  isSuccessAdminCreate: false,
+  isSuccessAdminDelete: false,
+  isSuccessAdminUpdate: false,
 };
 
 const quizReducer = (state = INITIAL_STATE, action) => {
@@ -21,6 +26,7 @@ const quizReducer = (state = INITIAL_STATE, action) => {
         quizData: {
           arrQuiz: action?.dataQuiz?.DT,
         },
+        isSuccessUserFetch: true,
       };
     }
 
@@ -30,6 +36,7 @@ const quizReducer = (state = INITIAL_STATE, action) => {
         quizData: {
           listQuiz: action?.dataQuiz?.DT,
         },
+        isSuccessAdminFetch: true,
       };
     }
 
@@ -39,6 +46,7 @@ const quizReducer = (state = INITIAL_STATE, action) => {
         quizData: {
           listQuiz: action?.dataQuiz?.DT,
         },
+        isSuccessAdminCreate: true,
       };
 
     case DELETE_QUIZ_ADMIN_SUCCESS: {
@@ -47,6 +55,7 @@ const quizReducer = (state = INITIAL_STATE, action) => {
         quizData: {
           listQuiz: action?.dataQuiz?.DT,
         },
+        isSuccessAdminDelete: true,
       };
     }
 
@@ -56,6 +65,7 @@ const quizReducer = (state = INITIAL_STATE, action) => {
         quizData: {
           listQuiz: action?.dataQuiz?.DT,
         },
+        isSuccessAdminUpdate: true,
       };
     }
     default:

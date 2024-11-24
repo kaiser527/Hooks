@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import { BsFillPatchPlusFill, BsFillPatchMinusFill } from "react-icons/bs";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
@@ -6,14 +6,13 @@ import { RiImageAddFill } from "react-icons/ri";
 import { v4 as uuidv4 } from "uuid";
 import "./Questions.scss";
 import _ from "lodash";
+import Lightbox from "react-awesome-lightbox";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllQuizForAdmin } from "../../../../redux/action/quizAction";
+import { CreateNewQuestionForQuizRedux } from "../../../../redux/action/questionAction";
+import { CreateNewAnswerForQuestionRedux } from "../../../../redux/action/answerAction";
 
 const Questions = (props) => {
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
-
   const [selectedQuiz, setSelectedQuiz] = useState({});
   const [questions, setQuestions] = useState([
     {
@@ -30,6 +29,33 @@ const Questions = (props) => {
       ],
     },
   ]);
+  const [isPreviewImage, setIsPreviewImage] = useState(false);
+  const [dataImagePreview, setDataImagePreview] = useState({
+    title: "",
+    url: "",
+  });
+  const [listQuizQuestion, setListQuizQuestion] = useState([]);
+
+  const listQuiz = useSelector((state) => state.quiz.quizData.listQuiz);
+  const questionId = useSelector((state) => state.question.questionData.Id);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetchQuiz();
+  }, []);
+
+  const fetchQuiz = async () => {
+    dispatch(fetchAllQuizForAdmin());
+    let listQuizClone = _.cloneDeep(listQuiz);
+    let newQuiz = listQuizClone.map((item) => {
+      return {
+        value: item.id,
+        label: `${item.id} - ${item.description}`,
+      };
+    });
+    setListQuizQuestion(newQuiz);
+  };
 
   const handleAddRemoveQuestion = (type, id) => {
     if (type === "ADD") {
@@ -126,8 +152,48 @@ const Questions = (props) => {
     }
   };
 
-  const handleSubmitQuestionForQuiz = () => {
-    console.log("questions:", questions);
+  const handleSubmitQuestionForQuiz = async () => {
+    //todo
+
+    //validate data
+    console.log("questions:", questions, selectedQuiz);
+
+    //submit questions
+    await Promise.all(
+      questions.map(async (question) => {
+        dispatch(
+          CreateNewQuestionForQuizRedux(
+            +selectedQuiz.value,
+            question.description,
+            question.imageFile
+          )
+        );
+        //submit answers
+        await Promise.all(
+          question.answers.map(async (answer) => {
+            dispatch(
+              CreateNewAnswerForQuestionRedux(
+                answer.description,
+                answer.isCorrect,
+                +questionId + 1
+              )
+            );
+          })
+        );
+      })
+    );
+  };
+
+  const handlePreviewImage = (questionId) => {
+    let questionClone = _.cloneDeep(questions);
+    let index = questionClone.findIndex((item) => item.id === questionId);
+    if (index > -1) {
+      setDataImagePreview({
+        url: URL.createObjectURL(questionClone[index].imageFile),
+        title: questionClone[index].imageName,
+      });
+      setIsPreviewImage(true);
+    }
   };
 
   return (
@@ -140,7 +206,7 @@ const Questions = (props) => {
           <Select
             defaultValue={selectedQuiz}
             onChange={setSelectedQuiz}
-            options={options}
+            options={listQuizQuestion}
           />
         </div>
         <div className="mt-3 mb-2">Add questions:</div>
@@ -179,9 +245,16 @@ const Questions = (props) => {
                       }
                     />
                     <span>
-                      {question.imageName
-                        ? question.imageName
-                        : "0 file is uploaded"}
+                      {question.imageName ? (
+                        <span
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handlePreviewImage(question.id)}
+                        >
+                          {question.imageName}
+                        </span>
+                      ) : (
+                        "0 file is uploaded"
+                      )}
                     </span>
                   </div>
                   <div className="btn-add">
@@ -199,6 +272,7 @@ const Questions = (props) => {
                     )}
                   </div>
                 </div>
+
                 {question.answers &&
                   question.answers.length > 0 &&
                   question.answers.map((answer, index) => {
@@ -271,6 +345,13 @@ const Questions = (props) => {
               Save Questions
             </button>
           </div>
+        )}
+        {isPreviewImage === true && (
+          <Lightbox
+            image={dataImagePreview.url}
+            title={dataImagePreview.title}
+            onClose={() => setIsPreviewImage(false)}
+          ></Lightbox>
         )}
       </div>
     </div>
