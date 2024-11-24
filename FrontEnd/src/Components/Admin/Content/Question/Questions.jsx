@@ -9,8 +9,10 @@ import _ from "lodash";
 import Lightbox from "react-awesome-lightbox";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllQuizForAdmin } from "../../../../redux/action/quizAction";
-import { CreateNewQuestionForQuizRedux } from "../../../../redux/action/questionAction";
-import { CreateNewAnswerForQuestionRedux } from "../../../../redux/action/answerAction";
+import {
+  postCreateNewAnswerForQuestion,
+  postCreateNewQuestionForQuiz,
+} from "../../../../services/apiServices";
 
 const Questions = (props) => {
   const [selectedQuiz, setSelectedQuiz] = useState({});
@@ -37,7 +39,6 @@ const Questions = (props) => {
   const [listQuizQuestion, setListQuizQuestion] = useState([]);
 
   const listQuiz = useSelector((state) => state.quiz.quizData.listQuiz);
-  const questionId = useSelector((state) => state.question.questionData.Id);
 
   const dispatch = useDispatch();
 
@@ -161,22 +162,18 @@ const Questions = (props) => {
     //submit questions
     await Promise.all(
       questions.map(async (question) => {
-        dispatch(
-          CreateNewQuestionForQuizRedux(
-            +selectedQuiz.value,
-            question.description,
-            question.imageFile
-          )
+        const q = await postCreateNewQuestionForQuiz(
+          selectedQuiz.value,
+          question.description,
+          question.imageFile
         );
         //submit answers
         await Promise.all(
           question.answers.map(async (answer) => {
-            dispatch(
-              CreateNewAnswerForQuestionRedux(
-                answer.description,
-                answer.isCorrect,
-                +questionId + 1
-              )
+            await postCreateNewAnswerForQuestion(
+              answer.description,
+              answer.isCorrect,
+              q.DT.id
             );
           })
         );
