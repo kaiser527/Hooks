@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import User from "./Components/User/User";
 import Admin from "./Components/Admin/Admin";
 import HomePage from "./Components/Home/Home";
 import ManageUser from "./Components/Admin/Content/ManageUser";
@@ -13,6 +12,7 @@ import ListQuiz from "./Components/User/ListQuiz";
 import DetailQuiz from "./Components/User/DetailQuiz";
 import ManageQuiz from "./Components/Admin/Content/Quiz/ManageQuiz";
 import Questions from "./Components/Admin/Content/Question/Questions";
+import PrivateRoute from "./routes/PrivateRoute";
 
 const NotFound = () => {
   return (
@@ -26,11 +26,25 @@ const Layout = (props) => {
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<HomePage />} />
-          <Route path="/users" element={<ListQuiz />} />
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <ListQuiz />
+              </PrivateRoute>
+            }
+          />
         </Route>
         <Route path="/quiz/:id" element={<DetailQuiz />} />
         {/*:id khai bao them tham so tren duong link url voi kieu gia tri la 1 key trong 1 object*/}
-        <Route path="/admins" element={<Admin />}>
+        <Route
+          path="/admins"
+          element={
+            <PrivateRoute>
+              <Admin />
+            </PrivateRoute>
+          }
+        >
           <Route index element={<DashBoard />} />
           <Route path="manage-quizzes" element={<ManageQuiz />} />
           <Route path="manage-users" element={<ManageUser />} />
@@ -38,6 +52,7 @@ const Layout = (props) => {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/test" element={<PrivateRoute />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

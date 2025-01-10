@@ -4,13 +4,13 @@ body {
   margin: 0;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .container,
   .container-lg,
   .container-md,
   .container-sm,
   .container-xl {
-    max-width: 1800px !important;
+    max-width: 1400px !important;
   }
 }
 
@@ -70,9 +70,14 @@ body {
       }
     }
   }
+  .main-container {
+    .app-content {
+      height: calc(100vh - 80px);
+    }
+  }
   .homepage-container {
     .homepage-content {
-      padding: 160px;
+      padding: 140px;
       position: relative;
       width: 64%;
       display: flex;

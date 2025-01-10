@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import ModalCreateUSer from "./ModalCreateUser";
 import "./ManageUser.scss";
 import { FcPlus } from "react-icons/fc";
-import { getUserWithPaginate } from "../../../services/apiServices";
 import ModalUpdateUser from "./ModalUpdateUser";
 import ModalViewUser from "./ModalViewUser";
 import ModalDeleteUser from "./ModalDeleteUser";
 import TableUserPaginate from "./TableUserPaginate";
+import { getUserWithPaginate } from "../../../services/apiServices";
 
 const ManageUser = (props) => {
-  const LIMIR_USER = 10;
+  const LIMIT_USER = 10;
   const [showModalCreateUser, setShowModalCreateUser] = useState(false);
   const [listUsers, setListUsers] = useState([]);
   const [showModaUpdateUser, setShowModaUpdateUser] = useState(false);
@@ -26,9 +26,9 @@ const ManageUser = (props) => {
   }, []);
 
   const fetchListUsersWithPaginate = async (page) => {
-    const res = await getUserWithPaginate(page, LIMIR_USER);
+    let res = await getUserWithPaginate(page, LIMIT_USER);
+    console.log("check user data", res);
     if (res.EC === 0) {
-      console.log("res.dt", res.DT);
       setListUsers(res.DT.users);
       setPageCount(res.DT.totalPages);
     }

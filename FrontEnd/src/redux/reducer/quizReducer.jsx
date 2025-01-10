@@ -1,9 +1,6 @@
 import {
-  CREATE_QUIZ_SUCCESS,
   FETCH_QUIZ_USER_SUCCESS,
   FETCH_QUIZ_ADMIN_SUCCESS,
-  DELETE_QUIZ_ADMIN_SUCCESS,
-  UPDATE_QUIZ_ADMIN_SUCCESS,
 } from "../action/quizAction";
 
 const INITIAL_STATE = {
@@ -13,9 +10,6 @@ const INITIAL_STATE = {
   },
   isSuccessAdminFetch: false,
   isSuccessUserFetch: false,
-  isSuccessAdminCreate: false,
-  isSuccessAdminDelete: false,
-  isSuccessAdminUpdate: false,
 };
 
 const quizReducer = (state = INITIAL_STATE, action) => {
@@ -37,35 +31,6 @@ const quizReducer = (state = INITIAL_STATE, action) => {
           listQuiz: action?.dataQuiz?.DT,
         },
         isSuccessAdminFetch: true,
-      };
-    }
-
-    case CREATE_QUIZ_SUCCESS:
-      return {
-        ...state,
-        quizData: {
-          listQuiz: action?.dataQuiz?.DT,
-        },
-        isSuccessAdminCreate: true,
-      };
-
-    case DELETE_QUIZ_ADMIN_SUCCESS: {
-      return {
-        ...state,
-        quizData: {
-          listQuiz: action?.dataQuiz?.DT,
-        },
-        isSuccessAdminDelete: true,
-      };
-    }
-
-    case UPDATE_QUIZ_ADMIN_SUCCESS: {
-      return {
-        ...state,
-        quizData: {
-          listQuiz: action?.dataQuiz?.DT,
-        },
-        isSuccessAdminUpdate: true,
       };
     }
     default:

@@ -48,9 +48,11 @@ const Header = () => {
             <NavLink to="/users" className="nav-link">
               Users
             </NavLink>
-            <NavLink to="admins" className="nav-link">
-              Admin
-            </NavLink>
+            {account.role === "ADMIN" && (
+              <NavLink to="admins" className="nav-link">
+                Admin
+              </NavLink>
+            )}
           </Nav>
           <Nav>
             {!isAuthenticated ? (

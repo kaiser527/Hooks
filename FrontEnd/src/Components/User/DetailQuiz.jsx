@@ -6,6 +6,7 @@ import "./DetailQuiz.scss";
 import Question from "./Question";
 import { toast } from "react-toastify";
 import ModalResult from "./ModalResult";
+import RightContent from "./Content/RightContent";
 
 const DetailQuiz = () => {
   let params = useParams(); //lay duoc object chua gia tri tham so tren duong link url hien tai sau khi khai bao phia route
@@ -178,7 +179,13 @@ const DetailQuiz = () => {
           </button>
         </div>
       </div>
-      <div className="right-content">count down</div>
+      <div className="right-content">
+        <RightContent
+          dataQuiz={dataQuiz}
+          handleFinishQuiz={handleFinishQuiz}
+          setIndex={setIndex}
+        />
+      </div>
       <ModalResult
         show={isShowModalResult}
         setShow={setIsShowModalResult}

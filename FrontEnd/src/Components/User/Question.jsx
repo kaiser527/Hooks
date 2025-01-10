@@ -1,7 +1,11 @@
 import _ from "lodash";
+import { useState } from "react";
+import Lightbox from "react-awesome-lightbox";
 
 const Question = (props) => {
   const { dataQuiz, index, handleCheckBox } = props;
+
+  const [isPreviewImage, setIsPreviewImage] = useState(false);
 
   if (_.isEmpty(dataQuiz)) {
     return <></>; //khi dataQuiz bang rong thi kh can render
@@ -16,9 +20,18 @@ const Question = (props) => {
       {dataQuiz.image ? (
         <div className="q-image">
           <img
+            style={{ cursor: "pointer" }}
             src={`data:image/jpeg;base64,${dataQuiz.image}`}
             alt="question image"
+            onClick={() => setIsPreviewImage(true)}
           />
+          {isPreviewImage === true && (
+            <Lightbox
+              image={`data:image/jpeg;base64,${dataQuiz.image}`}
+              title={"Question Image"}
+              onClose={() => setIsPreviewImage(false)}
+            ></Lightbox>
+          )}
         </div>
       ) : (
         <div className="q-image"></div>

@@ -4,25 +4,21 @@ import { BsFillPatchPlusFill, BsFillPatchMinusFill } from "react-icons/bs";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { RiImageAddFill } from "react-icons/ri";
 import { v4 as uuidv4 } from "uuid";
-import "./Questions.scss";
+import "./QuizQA.scss";
 import _ from "lodash";
 import Lightbox from "react-awesome-lightbox";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllQuizForAdmin } from "../../../../redux/action/quizAction";
-import {
-  postCreateNewAnswerForQuestion,
-  postCreateNewQuestionForQuiz,
-} from "../../../../services/apiServices";
+import { getQuizWithQA, postUpsertQA } from "../../../../services/apiServices";
 import { toast } from "react-toastify";
 
-const Questions = (props) => {
+const QuizQA = (props) => {
   const initQuestion = [
     {
       id: uuidv4(),
       description: "",
       imageFile: "",
       imageName: "",
-      correctCount: 0,
       answers: [
         {
           id: uuidv4(),
@@ -40,7 +36,6 @@ const Questions = (props) => {
     title: "",
     url: "",
   });
-
   const [listQuizQuestion, setListQuizQuestion] = useState([]);
 
   const listQuiz = useSelector((state) => state.quiz.quizData.listQuiz);
@@ -50,6 +45,51 @@ const Questions = (props) => {
   useEffect(() => {
     fetchQuiz();
   }, []);
+
+  useEffect(() => {
+    if (selectedQuiz && selectedQuiz.value) {
+      fetchQuizWithQA();
+    }
+  }, [selectedQuiz]);
+
+  const urltoFile = (url, filename, mimeType) => {
+    if (url.startsWith("data:")) {
+      let arr = url.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[arr.length - 1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      let file = new File([u8arr], filename, { type: mime || mimeType });
+      return Promise.resolve(file);
+    }
+    return fetch(url)
+      .then((res) => res.arrayBuffer())
+      .then((buf) => new File([buf], filename, { type: mimeType }));
+  };
+
+  const fetchQuizWithQA = async () => {
+    let res = await getQuizWithQA(selectedQuiz.value);
+    if (res.EC === 0) {
+      //convert
+      let newQA = [];
+      for (let i = 0; i < res.DT.qa.length; i++) {
+        if (res.DT.qa[i].imageFile) {
+          res.DT.qa[i].imageName = `Question-${res.DT.qa[i].id}.png`;
+          res.DT.qa[i].imageFile = await urltoFile(
+            `data:image/png;base64,${res.DT.qa[i].imageFile}`,
+            `Question-${res.DT.qa[i].id}.png`,
+            "image/png"
+          );
+        }
+        newQA.push(res.DT.qa[i]);
+      }
+      console.log("check QA", res);
+      setQuestions(newQA);
+    }
+  };
 
   const fetchQuiz = async () => {
     dispatch(fetchAllQuizForAdmin());
@@ -176,9 +216,6 @@ const Questions = (props) => {
           indexAnswer = j;
           break;
         }
-        if (questions[i].answers[j].isCorrect) {
-          questions[i].correctCount++;
-        }
       }
       indexQuestion = i;
       if (isValidA === false) break;
@@ -193,16 +230,10 @@ const Questions = (props) => {
 
     //validate question
     let isValidQ = true;
-    let isCorrectQA = true;
     let indexQ = 0;
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].description) {
         isValidQ = false;
-        indexQ = i;
-        break;
-      }
-      if (questions[i].correctCount < 1) {
-        isCorrectQA = false;
         indexQ = i;
         break;
       }
@@ -213,30 +244,22 @@ const Questions = (props) => {
       return;
     }
 
-    if (isCorrectQA === false) {
-      toast.error(
-        `Please choose at least 1 correct answer at Qestion ${indexQ + 1}`
-      );
-      return;
-    }
-
-    //submit questions
-    for (const question of questions) {
-      const q = await postCreateNewQuestionForQuiz(
-        +selectedQuiz.value,
-        question.description,
-        question.imageFile
-      );
-      for (const answer of question.answers) {
-        await postCreateNewAnswerForQuestion(
-          answer.description,
-          answer.isCorrect,
-          q.DT.id
-        );
+    let questionClone = _.cloneDeep(questions);
+    for (let i = 0; i < questionClone.length; i++) {
+      if (questionClone[i].imageFile) {
+        questionClone[i].imageFile = await toBase64(questionClone[i].imageFile);
       }
     }
 
-    toast.success("Create questions and answers succeed!");
+    let res = await postUpsertQA({
+      quizId: selectedQuiz.value,
+      questions: questionClone,
+    });
+
+    if (res && res.EC === 0) {
+      toast.success(res.EM);
+      fetchQuizWithQA();
+    }
 
     setQuestions(initQuestion);
   };
@@ -253,10 +276,16 @@ const Questions = (props) => {
     }
   };
 
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
   return (
     <div className="questions-container">
-      <div className="title">Manage Questions</div>
-      <hr />
       <div className="add-new-question">
         <div className="col-6 form-group">
           <label className="mb-2">Select Quiz:</label>
@@ -415,4 +444,4 @@ const Questions = (props) => {
   );
 };
 
-export default Questions;
+export default QuizQA;
